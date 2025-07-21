@@ -1,31 +1,32 @@
-version: '3'
-
 services:
   payload:
-    image: node:18-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+        - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
     ports:
       - '3000:3000'
-    volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "yarn install && yarn dev"
     depends_on:
-      - mongo
+      - postgres
     env_file:
       - .env
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    command:
-      - --storageEngine=wiredTiger
     volumes:
-      - data:/data/db
-    logging:
-      driver: none
+      - media:/app/public
+
+  postgres:
+    image: postgis/postgis:17-3.5-alpine
+    platform: linux/amd64
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: payload
+    volumes:
+      - data:/var/lib/postgresql/data
 
 volumes:
   data:
-  node_modules:
+  media:
