@@ -837,6 +837,7 @@ export interface News {
   publishedAt?: string | null;
   authors?: (number | User)[] | null;
   isEvent?: boolean | null;
+  rsvp?: string | null;
   populatedAuthors?:
     | {
         id?: string | null;
@@ -1301,6 +1302,7 @@ export interface NewsSelect<T extends boolean = true> {
   publishedAt?: T;
   authors?: T;
   isEvent?: T;
+  rsvp?: T;
   populatedAuthors?:
     | T
     | {
