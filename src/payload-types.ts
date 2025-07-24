@@ -575,7 +575,7 @@ export interface ArchiveBlock {
     [k: string]: unknown;
   } | null;
   populateBy?: ('collection' | 'selection') | null;
-  relationTo?: ('posts' | 'projects') | null;
+  relationTo?: ('posts' | 'projects' | 'news') | null;
   categories?: (number | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
@@ -588,11 +588,71 @@ export interface ArchiveBlock {
             relationTo: 'projects';
             value: number | Project;
           }
+        | {
+            relationTo: 'news';
+            value: number | News;
+          }
       )[]
     | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'archive';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+  id: number;
+  title: string;
+  heroImage?: (number | null) | Media;
+  eventDate?: string | null;
+  rsvp?: string | null;
+  eventLocation?: string | null;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  event_coordinates?: [number, number] | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  relatedPosts?: (number | News)[] | null;
+  categories?: (number | Category)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  authors?: (number | User)[] | null;
+  isEvent?: boolean | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+      }[]
+    | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -793,62 +853,6 @@ export interface Form {
     | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "news".
- */
-export interface News {
-  id: number;
-  title: string;
-  heroImage?: (number | null) | Media;
-  eventDate?: string | null;
-  eventLocation?: string | null;
-  /**
-   * @minItems 2
-   * @maxItems 2
-   */
-  event_coordinates?: [number, number] | null;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  relatedPosts?: (number | News)[] | null;
-  categories?: (number | Category)[] | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  publishedAt?: string | null;
-  authors?: (number | User)[] | null;
-  isEvent?: boolean | null;
-  rsvp?: string | null;
-  populatedAuthors?:
-    | {
-        id?: string | null;
-        name?: string | null;
-      }[]
-    | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1287,6 +1291,7 @@ export interface NewsSelect<T extends boolean = true> {
   title?: T;
   heroImage?: T;
   eventDate?: T;
+  rsvp?: T;
   eventLocation?: T;
   event_coordinates?: T;
   content?: T;
@@ -1302,7 +1307,6 @@ export interface NewsSelect<T extends boolean = true> {
   publishedAt?: T;
   authors?: T;
   isEvent?: T;
-  rsvp?: T;
   populatedAuthors?:
     | T
     | {

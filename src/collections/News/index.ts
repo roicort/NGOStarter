@@ -96,6 +96,15 @@ export const News: CollectionConfig<'news'> = {
               },
             },
             {
+              name: 'rsvp',
+              type: 'text',
+              label: 'RSVP Link or Instructions',
+              required: true,
+              admin: {
+                condition: (_, siblingData) => siblingData.isEvent === true,
+              },
+            },
+            {
               name: 'eventLocation',
               type: 'text',
               label: 'Event Location',
@@ -226,15 +235,6 @@ export const News: CollectionConfig<'news'> = {
       label: 'Is this news about an event?',
       admin: {
         position: 'sidebar',
-      },
-    },
-    {
-      name: 'rsvp',
-      type: 'text',
-      label: 'RSVP Link or Instructions',
-      required: true,
-      admin: {
-        condition: (_, siblingData) => siblingData.isEvent === true,
       },
     },
     // This field is only used to populate the user data via the `populateAuthors` hook
