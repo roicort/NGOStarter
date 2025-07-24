@@ -29,8 +29,6 @@ export default async function Page() {
     },
   })
 
-  console.log('ArchiveBlock posts:', posts)
-
   return (
     <div className="pt-24 pb-24">
       <PageClient />

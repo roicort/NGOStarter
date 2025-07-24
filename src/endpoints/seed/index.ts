@@ -3,18 +3,33 @@ import type { CollectionSlug, GlobalSlug, Payload, PayloadRequest, File } from '
 import { contactForm as contactFormData } from './contact-form'
 import { contact as contactPageData } from './contact-page'
 import { home } from './home'
-import { image1 } from './image-1'
-import { image2 } from './image-2'
-import { imageHero1 } from './image-hero-1'
-import { post1 } from './post-1'
-import { post2 } from './post-2'
-import { post3 } from './post-3'
+import { locker } from './img/lockers-img'
+import { classroom } from './img/classroom-img'
+import { library } from './img/library-img'
+import { school } from './img/school-img'
+import { auditory } from './img/auditory-img'
+import { post1 } from './posts/post-1'
+import { post2 } from './posts/post-2'
+import { post3 } from './posts/post-3'
+import { about } from './about'
+import { projects } from './projects'
+import { news1 } from './news/news-1'
+import { news2 } from './news/news-2'
+import { news3 } from './news/news-3'
+import { project1 } from './projects/project-1'
+import { project2 } from './projects/project-2'
+import { project3 } from './projects/project-3'
+
+import fs from 'fs'
+import path from 'path'
 
 const collections: CollectionSlug[] = [
   'categories',
   'media',
   'pages',
   'posts',
+  'news',
+  'projects',
   'forms',
   'form-submissions',
   'search',
@@ -80,22 +95,29 @@ export const seed = async ({
 
   payload.logger.info(`— Seeding media...`)
 
-  const [image1Buffer, image2Buffer, image3Buffer, hero1Buffer] = await Promise.all([
-    fetchFileByURL(
-      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/website/src/endpoints/seed/image-post1.webp',
-    ),
-    fetchFileByURL(
-      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/website/src/endpoints/seed/image-post2.webp',
-    ),
-    fetchFileByURL(
-      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/website/src/endpoints/seed/image-post3.webp',
-    ),
-    fetchFileByURL(
-      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/website/src/endpoints/seed/image-hero1.webp',
-    ),
-  ])
+  async function fetchFileFromDirectory(filePath: string): Promise<File> {
+    const absolutePath = path.resolve(process.cwd(), filePath)
+    const fileBuffer = fs.readFileSync(absolutePath)
+    const fileStats = fs.statSync(absolutePath)
 
-  const [demoAuthor, image1Doc, image2Doc, image3Doc, imageHomeDoc] = await Promise.all([
+    return {
+      name: path.basename(filePath),
+      data: fileBuffer,
+      mimetype: `image/${path.extname(filePath).slice(1)}`,
+      size: fileStats.size,
+    }
+  }
+
+  const [lockerBuffer, classroomBuffer, libraryBuffer, schoolBuffer, auditoryBuffer] =
+    await Promise.all([
+      fetchFileFromDirectory('./src/endpoints/seed/img/lockers.png'),
+      fetchFileFromDirectory('./src/endpoints/seed/img/classroom.png'),
+      fetchFileFromDirectory('./src/endpoints/seed/img/library.png'),
+      fetchFileFromDirectory('./src/endpoints/seed/img/school.png'),
+      fetchFileFromDirectory('./src/endpoints/seed/img/auditory.png'),
+    ])
+
+  const [demoAuthor, image1Doc, image2Doc, image3Doc, image4Doc, image5Doc] = await Promise.all([
     payload.create({
       collection: 'users',
       data: {
@@ -106,23 +128,28 @@ export const seed = async ({
     }),
     payload.create({
       collection: 'media',
-      data: image1,
-      file: image1Buffer,
+      data: classroom,
+      file: classroomBuffer,
     }),
     payload.create({
       collection: 'media',
-      data: image2,
-      file: image2Buffer,
+      data: library,
+      file: libraryBuffer,
     }),
     payload.create({
       collection: 'media',
-      data: image2,
-      file: image3Buffer,
+      data: auditory,
+      file: auditoryBuffer,
     }),
     payload.create({
       collection: 'media',
-      data: imageHero1,
-      file: hero1Buffer,
+      data: school,
+      file: schoolBuffer,
+    }),
+    payload.create({
+      collection: 'media',
+      data: locker,
+      file: lockerBuffer,
     }),
 
     payload.create({
@@ -133,19 +160,6 @@ export const seed = async ({
           {
             label: 'Technology',
             url: '/technology',
-          },
-        ],
-      },
-    }),
-
-    payload.create({
-      collection: 'categories',
-      data: {
-        title: 'News',
-        breadcrumbs: [
-          {
-            label: 'News',
-            url: '/news',
           },
         ],
       },
@@ -257,6 +271,64 @@ export const seed = async ({
     },
   })
 
+  payload.logger.info(`— Seeding news...`)
+
+  const news1Doc = await payload.create({
+    collection: 'news',
+    depth: 0,
+    context: {
+      disableRevalidate: true,
+    },
+    data: news1({ heroImage: image1Doc, blockImage: image2Doc, author: demoAuthor }),
+  })
+
+  const news2Doc = await payload.create({
+    collection: 'news',
+    depth: 0,
+    context: {
+      disableRevalidate: true,
+    },
+    data: news2({ heroImage: image2Doc, blockImage: image3Doc, author: demoAuthor }),
+  })
+
+  const news3Doc = await payload.create({
+    collection: 'news',
+    depth: 0,
+    context: {
+      disableRevalidate: true,
+    },
+    data: news3({ heroImage: image3Doc, blockImage: image1Doc, author: demoAuthor }),
+  })
+
+  payload.logger.info(`— Seeding projects...`)
+
+  const project1Doc = await payload.create({
+    collection: 'projects',
+    depth: 0,
+    context: {
+      disableRevalidate: true,
+    },
+    data: project1({ heroImage: image1Doc, blockImage: image2Doc, author: demoAuthor }),
+  })
+
+  const project2Doc = await payload.create({
+    collection: 'projects',
+    depth: 0,
+    context: {
+      disableRevalidate: true,
+    },
+    data: project2({ heroImage: image2Doc, blockImage: image3Doc, author: demoAuthor }),
+  })
+
+  const project3Doc = await payload.create({
+    collection: 'projects',
+    depth: 0,
+    context: {
+      disableRevalidate: true,
+    },
+    data: project3({ heroImage: image3Doc, blockImage: image1Doc, author: demoAuthor }),
+  })
+
   payload.logger.info(`— Seeding contact form...`)
 
   const contactForm = await payload.create({
@@ -267,16 +339,26 @@ export const seed = async ({
 
   payload.logger.info(`— Seeding pages...`)
 
-  const [_, contactPage] = await Promise.all([
+  const [_, contactPage, aboutPage, projectsPage] = await Promise.all([
     payload.create({
       collection: 'pages',
       depth: 0,
-      data: home({ heroImage: imageHomeDoc, metaImage: image2Doc }),
+      data: home({ heroImage: image2Doc, metaImage: image2Doc }),
     }),
     payload.create({
       collection: 'pages',
       depth: 0,
       data: contactPageData({ contactForm: contactForm }),
+    }),
+    payload.create({
+      collection: 'pages',
+      depth: 0,
+      data: about({ heroImage: image4Doc, metaImage: image2Doc }),
+    }),
+    payload.create({
+      collection: 'pages',
+      depth: 0,
+      data: projects({ heroImage: image4Doc, metaImage: image2Doc }),
     }),
   ])
 
@@ -287,6 +369,30 @@ export const seed = async ({
       slug: 'header',
       data: {
         navItems: [
+          {
+            link: {
+              type: 'reference',
+              label: 'Who We Are',
+              reference: {
+                relationTo: 'pages',
+                value: aboutPage.id,
+              },
+            },
+          },
+          {
+            link: {
+              type: 'custom',
+              label: 'What We Do',
+              url: '/projects',
+            },
+          },
+          {
+            link: {
+              type: 'custom',
+              label: 'News',
+              url: '/news',
+            },
+          },
           {
             link: {
               type: 'custom',
@@ -314,16 +420,9 @@ export const seed = async ({
           {
             link: {
               type: 'custom',
-              label: 'Admin',
-              url: '/admin',
-            },
-          },
-          {
-            link: {
-              type: 'custom',
               label: 'Source Code',
               newTab: true,
-              url: 'https://github.com/payloadcms/payload/tree/main/templates/website',
+              url: 'https://github.com/nonzero-sum/NGOStarter',
             },
           },
           {
