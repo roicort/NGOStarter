@@ -26,6 +26,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/slug'
+import { link } from '@/fields/link'
 
 export const News: CollectionConfig<'news'> = {
   slug: 'news',
@@ -97,9 +98,14 @@ export const News: CollectionConfig<'news'> = {
             },
             {
               name: 'rsvp',
-              type: 'text',
-              label: 'RSVP Link or Instructions',
-              required: true,
+              type: 'group',
+              label: 'RSVP',
+              fields: [
+                link({
+                  appearances: false,
+                }),
+              ],
+              required: false,
               admin: {
                 condition: (_, siblingData) => siblingData.isEvent === true,
               },
