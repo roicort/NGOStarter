@@ -4,13 +4,13 @@ import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
-import type { NewsPost } from '@/payload-types'
+import type { News } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
 
 export type NewsCardPostData = Pick<
-  NewsPost,
+  News,
   'slug' | 'categories' | 'meta' | 'title' | 'eventDate' | 'eventLocation'
 >
 
@@ -22,7 +22,7 @@ export const NewsCard: React.FC<{
   showCategories?: boolean
   title?: string
 }> = (props) => {
-  const { card, link } = useClickableCard({})
+  const { card, link } = useClickableCard<HTMLDivElement>({})
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
 
   const { slug, categories, meta, title } = doc || {}
