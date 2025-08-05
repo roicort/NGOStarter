@@ -57,6 +57,14 @@ export default async function Page({ params: paramsPromise }: Args) {
   // Remove this code once your website is seeded
   if (!page && slug === 'home') {
     page = homeStatic
+    const { hero, layout } = page
+    return (
+      <article className={'pt-24 pb-24'}>
+        <PageClient />
+        <RenderHero {...hero} />
+        <RenderBlocks blocks={layout} />
+      </article>
+    )
   }
 
   if (!page) {
@@ -66,7 +74,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const { hero, layout } = page
 
   return (
-    <article className="pb-24">
+    <article className={`${slug === 'home' ? '' : 'pt-24'} pb-24`}>
       <PageClient />
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />

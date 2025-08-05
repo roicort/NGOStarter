@@ -607,7 +607,27 @@ export interface News {
   title: string;
   heroImage?: (number | null) | Media;
   eventDate?: string | null;
-  rsvp?: string | null;
+  rsvp?: {
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: number | Post;
+          } | null)
+        | ({
+            relationTo: 'projects';
+            value: number | Project;
+          } | null);
+      url?: string | null;
+      label: string;
+    };
+  };
   eventLocation?: string | null;
   /**
    * @minItems 2
@@ -1291,7 +1311,19 @@ export interface NewsSelect<T extends boolean = true> {
   title?: T;
   heroImage?: T;
   eventDate?: T;
-  rsvp?: T;
+  rsvp?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+      };
   eventLocation?: T;
   event_coordinates?: T;
   content?: T;
