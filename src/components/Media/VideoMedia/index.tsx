@@ -29,7 +29,10 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
     return (
       <video
         autoPlay
-        className={cn(videoClassName)}
+        className={cn(
+          'absolute inset-0 w-full h-full object-cover text-transparent',
+          videoClassName,
+        )}
         controls={false}
         loop
         muted
