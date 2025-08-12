@@ -8,7 +8,9 @@ This template is right for you if you are working on:
 - A content publishing platform for NGOs
 - Showcasing projects, news, and media for your organization
 
-Core features:
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/ngo-starter?referralCode=new)
+
+## Core Features
 
 - [Pre-configured Payload Config](#how-it-works)
 - [Authentication](#users-authentication)
